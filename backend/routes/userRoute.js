@@ -1,0 +1,10 @@
+import express from "express";
+import auth from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
+const router =express.Router();
+import {Signup , Login, getUserById, getUserData} from "../controllers/userController.js";
+router.post("/signup" ,Signup);
+router.post("/login", Login);
+router.get("/user/me", auth, getUserData);
+router.get("/user/:id",auth ,roleMiddleware("admin"), getUserById);
+export default router;

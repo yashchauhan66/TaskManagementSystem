@@ -1,0 +1,11 @@
+import express from "express";
+import auth from "../middleware/authMiddleware.js";
+import roleMiddleware from "../middleware/roleMiddleware.js";
+const router=express.Router();
+import {createTask , getTask , getAllTasks, updateTask , deleteTask} from "../controllers/taskController.js";
+router.post("/create",auth ,roleMiddleware("user","admin"),createTask);
+router.get("/get",auth ,roleMiddleware("user","admin"),getTask);
+router.get("/all",auth ,roleMiddleware("admin"),getAllTasks);
+router.put("/update/:id",auth ,roleMiddleware("user","admin"), updateTask);
+router.delete("/delete/:id",auth ,roleMiddleware("admin"),deleteTask);
+export default router;
