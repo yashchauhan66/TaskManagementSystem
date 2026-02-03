@@ -1,8 +1,10 @@
 
 
+const BASE_URL = 'https://taskmanagementsystem-vqes.onrender.com';
+
 export const authAPI = {
   getUserData: async (token) => {
-    const response = await fetch('/api/v1/user/me', {
+    const response = await fetch(`${BASE_URL}/api/v1/user/me`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -17,7 +19,7 @@ export const authAPI = {
   },
 
   signup: async (userData) => {
-    const response = await fetch('/api/v1/signup', {
+    const response = await fetch(`${BASE_URL}/api/v1/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -35,7 +37,7 @@ export const authAPI = {
   },
 
   login: async (credentials) => {
-    const response = await fetch('/api/v1/login', {
+    const response = await fetch(`${BASE_URL}/api/v1/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -54,7 +56,7 @@ export const authAPI = {
 };
 export const taskAPI = {
   getTasks: async (token) => {
-    const response = await fetch('/task/get', {
+    const response = await fetch(`${BASE_URL}/task/get`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -68,7 +70,7 @@ export const taskAPI = {
   },
 
   getAllTasks: async (token) => {
-    const response = await fetch('/task/all', {
+    const response = await fetch(`${BASE_URL}/task/all`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -82,7 +84,7 @@ export const taskAPI = {
   },
 
   createTask: async (taskData, token) => {
-    const response = await fetch('/task/create', {
+    const response = await fetch(`${BASE_URL}/task/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -101,7 +103,7 @@ export const taskAPI = {
   },
 
   updateTask: async (taskId, taskData, token) => {
-    const response = await fetch(`/task/update/${taskId}`, {
+    const response = await fetch(`${BASE_URL}/task/update/${taskId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -120,7 +122,7 @@ export const taskAPI = {
   },
 
   deleteTask: async (taskId, token) => {
-    const response = await fetch(`/task/delete/${taskId}`, {
+    const response = await fetch(`${BASE_URL}/task/delete/${taskId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
