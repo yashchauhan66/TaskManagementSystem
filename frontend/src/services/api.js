@@ -1,6 +1,6 @@
 
 
-const BASE_URL = 'https://taskmanagementsystem-vqes.onrender.com';
+const BASE_URL = 'http://localhost:5000';
 
 export const authAPI = {
   getUserData: async (token) => {
