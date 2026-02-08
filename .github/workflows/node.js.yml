@@ -11,18 +11,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 18
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
 
-      - run: npm install
+      # 🔹 Backend
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
 
-      - name: Create .env file
-        run: |
-          New-Item -ItemType File -Path .env -Force
-          echo "${{ secrets.ENV_FILE }}" | Out-File .env -Encoding utf8
-
-    
-   
+      # 🔹 Frontend
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
