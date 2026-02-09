@@ -1,29 +1,44 @@
-name: Node.js CI
+name: Node.js CI + Deploy
 
 on:
   push:
     branches: ["main"]
 
 jobs:
-  build:
+  deploy:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: npm
-          cache-dependency-path: |
-            backend/package-lock.json
-            frontend/package-lock.json
 
+      # 🔹 Backend
       - name: Install backend dependencies
         working-directory: backend
-        run: npm ci
+        run: npm install
 
+      - name: Restart backend with PM2
+        working-directory: backend
+        run: |
+          pm2 restart backend || pm2 start npm --name backend -- start
+
+      # 🔹 Frontend
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci
+        run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Deploy frontend to Nginx
+        run: |
+          sudo rm -rf /var/www/html/*
+          sudo cp -r frontend/build/* /var/www/html/
+          sudo systemctl restart nginx
+
