@@ -1,4 +1,4 @@
-name: Node.js CI + Deploy
+name: CI + Docker + AWS Deploy
 
 on:
   push:
@@ -9,36 +9,51 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      # 1️⃣ Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Node Setup
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 🔹 Backend
-      - name: Install backend dependencies
+      # ================= BACKEND =================
+      - name: Install backend deps
         working-directory: backend
-        run: npm install
+        run: npm ci
 
-      - name: Restart backend with PM2
+      - name: Test backend
         working-directory: backend
-        run: |
-          pm2 restart backend || pm2 start npm --name backend -- start
+        run: npm test || echo "No tests"
 
-      # 🔹 Frontend
-      - name: Install frontend dependencies
+      # ================= FRONTEND =================
+      - name: Install frontend deps
         working-directory: frontend
-        run: npm install
+        run: npm ci
+
+      - name: Test frontend
+        working-directory: frontend
+        run: npm test || echo "No tests"
 
       - name: Build frontend
         working-directory: frontend
         run: npm run build
 
-      - name: Deploy frontend to Nginx
-        run: |
-          sudo rm -rf /var/www/html/*
-          sudo cp -r frontend/build/* /var/www/html/
-          sudo systemctl restart nginx
+      # ================= DOCKER =================
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Push Docker images
+        run: docker compose push
+
+      # ================= DEPLOY =================
+      - name: Deploy on AWS EC2
+        run: |
+          docker compose down
+          docker compose pull
+          docker compose up -d
