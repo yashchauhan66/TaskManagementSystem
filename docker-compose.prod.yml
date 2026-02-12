@@ -5,7 +5,7 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    container_name: taskmanagement-backend
+    container_name: taskmanagement-backend-prod
     ports:
       - "5000:5000"
     env_file:
@@ -19,6 +19,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    environment:
+      - NODE_ENV=production
 
   frontend:
     build: 
@@ -26,9 +28,10 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=production
-    container_name: taskmanagement-frontend
+    container_name: taskmanagement-frontend-prod
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       backend:
         condition: service_healthy
@@ -39,3 +42,6 @@ services:
 networks:
   taskmanagement-network:
     driver: bridge
+
+volumes:
+  nginx_logs:
