@@ -2,9 +2,9 @@
 
 ## Environment Configuration
 
-### Frontend Environment Variables
-- **Development**: `.env.development` → `VITE_API_URL=http://localhost:5000`
-- **Production**: `.env.production` → `VITE_API_URL=http://13.49.245.39:5000`
+### Frontend Environment Variables (Create React App)
+- **Development**: `.env.development` → `REACT_APP_API_URL=http://localhost:5000`
+- **Production**: `.env.production` → `REACT_APP_API_URL=http://13.49.245.39:5000`
 
 ### Backend Environment Variables
 - **Production**: `backend/.env`
@@ -14,6 +14,19 @@
   NODE_ENV=production
   PORT=5000
   ```
+
+## API Configuration
+
+### Frontend API Service
+```javascript
+// src/services/api.js
+const BASE_URL = process.env.REACT_APP_API_URL;
+```
+
+### Environment Variable Usage
+- **Development**: Uses `http://localhost:5000`
+- **Production**: Uses `http://13.49.245.39:5000`
+- **Tests**: Mocked to `http://localhost:5000` in setupTests.js
 
 ## Docker Configuration
 
@@ -31,6 +44,23 @@ chmod +x deploy.sh
 - **Frontend**: http://13.49.245.39
 - **Backend API**: http://13.49.245.39:5000
 - **Health Check**: http://13.49.245.39/health
+
+## Testing
+
+### Jest Tests
+```bash
+# Run tests with environment variables
+npm test -- --watchAll=false
+
+# Tests automatically use mocked environment variables
+# process.env.REACT_APP_API_URL = 'http://localhost:5000';
+```
+
+### Environment Variable Testing
+```bash
+# Test environment configuration
+node test-env.js
+```
 
 ## Docker Features
 
@@ -65,6 +95,19 @@ Docker build uses production environment
 API calls to http://13.49.245.39:5000
 ```
 
+## Environment Variables
+
+### Frontend (Create React App)
+- `REACT_APP_API_URL`: Backend API URL
+- Automatically loaded based on NODE_ENV
+- Must start with `REACT_APP_` prefix
+
+### Backend
+- `MONGO_URL`: MongoDB connection string
+- `SECRET_KEY`: JWT signing key
+- `NODE_ENV`: Environment (development/production)
+- `PORT`: Server port
+
 ## Monitoring
 
 ### Check Service Status
@@ -81,18 +124,6 @@ docker-compose -f docker-compose.prod.yml logs -f
 ```bash
 curl http://13.49.245.39/health
 ```
-
-## Environment Variables
-
-### Frontend (Vite)
-- `VITE_API_URL`: Backend API URL
-- Automatically loaded based on NODE_ENV
-
-### Backend
-- `MONGO_URL`: MongoDB connection string
-- `SECRET_KEY`: JWT signing key
-- `NODE_ENV`: Environment (development/production)
-- `PORT`: Server port
 
 ## SSL/HTTPS Setup
 
