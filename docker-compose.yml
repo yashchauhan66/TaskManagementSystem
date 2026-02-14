@@ -10,7 +10,13 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
+    environment:
+       - REDIS_URL=${REDIS_URL}
+       - MONGO_URI=${MONGO_URI}
+       - SECRET_key=${SECRET_key}
     restart: unless-stopped
+    depends_on:
+      - redis
     networks:
       - taskmanagement-network
     healthcheck:
@@ -32,6 +38,15 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - taskmanagement-network
+
+  redis:
+    image: redis:7
+    container_name: taskmanagement-redis
+    ports:
+      - "6379:6379"
     restart: unless-stopped
     networks:
       - taskmanagement-network

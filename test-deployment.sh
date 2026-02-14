@@ -1,64 +1,64 @@
 #!/bin/bash
 
-echo "🧪 Testing deployment setup..."
+echo " Testing deployment setup..."
 
 # Test if environment files exist
-echo "📁 Checking environment files..."
+echo " Checking environment files..."
 if [ -f "frontend/.env.development" ]; then
-    echo "✅ .env.development exists"
+    echo " .env.development exists"
 else
-    echo "❌ .env.development missing"
+    echo " .env.development missing"
 fi
 
 if [ -f "frontend/.env.production" ]; then
-    echo "✅ .env.production exists"
+    echo " .env.production exists"
 else
-    echo "❌ .env.production missing"
+    echo " .env.production missing"
 fi
 
 if [ -f "backend/.env" ]; then
-    echo "✅ backend/.env exists"
+    echo " backend/.env exists"
 else
-    echo "❌ backend/.env missing"
+    echo " backend/.env missing"
 fi
 
 # Test Docker files
-echo "🐳 Checking Docker configuration..."
+echo " Checking Docker configuration..."
 if [ -f "frontend/Dockerfile" ]; then
-    echo "✅ Frontend Dockerfile exists"
+    echo " Frontend Dockerfile exists"
 else
-    echo "❌ Frontend Dockerfile missing"
+    echo " Frontend Dockerfile missing"
 fi
 
 if [ -f "backend/Dockerfile" ]; then
-    echo "✅ Backend Dockerfile exists"
+    echo " Backend Dockerfile exists"
 else
-    echo "❌ Backend Dockerfile missing"
+    echo " Backend Dockerfile missing"
 fi
 
 if [ -f "docker-compose.prod.yml" ]; then
-    echo "✅ Production docker-compose exists"
+    echo " Production docker-compose exists"
 else
-    echo "❌ Production docker-compose missing"
+    echo " Production docker-compose missing"
 fi
 
 # Test nginx configuration
 if [ -f "frontend/nginx.conf" ]; then
-    echo "✅ Nginx configuration exists"
+    echo " Nginx configuration exists"
 else
-    echo "❌ Nginx configuration missing"
+    echo " Nginx configuration missing"
 fi
 
 # Test health check
 if [ -f "backend/healthcheck.js" ]; then
-    echo "✅ Health check script exists"
+    echo " Health check script exists"
 else
-    echo "❌ Health check script missing"
+    echo " Health check script missing"
 fi
 
-echo "🔍 Environment variable contents:"
+echo " Environment variable contents:"
 echo "Development: $(cat frontend/.env.development)"
 echo "Production: $(cat frontend/.env.production)"
 echo "Backend: $(cat backend/.env)"
 
-echo "✅ Test complete!"
+echo " Test complete!"
