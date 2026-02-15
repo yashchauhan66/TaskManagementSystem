@@ -89,5 +89,5 @@ jobs:
             cd app
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-backend:latest
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
