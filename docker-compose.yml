@@ -12,8 +12,8 @@ services:
       - ./backend/.env
     environment:
        - REDIS_URL=${REDIS_URL}
-       - MONGO_URI=${MONGO_URI}
-       - SECRET_key=${SECRET_key}
+       - MONGO_URL=${MONGO_URL}
+       - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
     depends_on:
       - redis
@@ -44,7 +44,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: taskmanagement-redis
+    container_name: angry_pare
     ports:
       - "6379:6379"
     restart: unless-stopped
