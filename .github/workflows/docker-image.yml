@@ -104,7 +104,7 @@ jobs:
           # Run frontend
           docker run -d \
             --name my-frontend \
-            -p 3000:3000 \
+            -p 3000:80 \
             --link my-backend:backend \
             ${{ secrets.DOCKER_USERNAME }}/my-frontend:latest
 
