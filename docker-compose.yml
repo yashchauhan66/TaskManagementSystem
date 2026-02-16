@@ -10,10 +10,7 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
-    environment:
-       - REDIS_URL=${REDIS_URL}
-       - MONGO_URL=${MONGO_URL}
-       - SECRET_KEY=${SECRET_KEY}
+
     restart: unless-stopped
     depends_on:
       - redis
@@ -23,7 +20,7 @@ services:
       test: ["CMD", "node", "healthcheck.js"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 40s
 
   frontend:

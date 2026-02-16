@@ -19,6 +19,11 @@ app.get("/",async(req ,res)=>{
 
 connectDB();
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
+
 app.use("/api/v1" ,  userRoute);
 app.use("/task" , taskRoute);
 app.listen(5000 ,()=>{

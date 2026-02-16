@@ -1,7 +1,7 @@
-const http = require('http');
+import http from 'http';
 
 const options = {
-  host: 'localhost',
+  host: '127.0.0.1',
   port: 5000,
   path: '/',
   timeout: 2000
