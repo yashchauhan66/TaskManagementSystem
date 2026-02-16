@@ -10,6 +10,10 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - MONGO_URI=${MONGO_URI}
+      - SECRET_key=${SECRET_key}
 
     restart: unless-stopped
     depends_on:
