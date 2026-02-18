@@ -1,6 +1,6 @@
 
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = "http://35.154.211.147:5000";
 
 export const authAPI = {
   getUserData: async (token) => {
