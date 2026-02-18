@@ -19,7 +19,7 @@ export const authAPI = {
   },
 
   signup: async (userData) => {
-    const response = await fetch(  "http://localhost:5000/api/v1/signup", {
+    const response = await fetch(  `${BASE_URL}/api/v1/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
