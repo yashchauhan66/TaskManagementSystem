@@ -11,9 +11,9 @@ services:
     env_file:
       - ./backend/.env
     environment:
-      - REDIS_URL=${REDIS_URL}
-      - MONGO_URI=${MONGO_URI}
-      - SECRET_key=${SECRET_key}
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URI=mongodb+srv://yashchauhan6660_db_user:Hanuamn123@cluster0.beu6lyv.mongodb.net/?appName=Cluster0
+      - SECRET_key=Hanuamn12345
     restart: unless-stopped
     networks:
       - taskmanagement-network
@@ -25,6 +25,7 @@ services:
       start_period: 40s
     depends_on:
       - redis
+      - mongo
 
   frontend:
     build: 
@@ -45,13 +46,24 @@ services:
   redis:
     image: redis:alpine
     container_name: taskmanagement-redis
-    ports:
-      - "6379:6379"
     restart: unless-stopped
     networks:
       - taskmanagement-network
     volumes:
       - redis_data:/data
+
+  mongo:
+    image: mongo:6
+    container_name: taskmanagement-mongo
+    restart: unless-stopped
+    networks:
+      - taskmanagement-network
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  redis_data:
+  mongo_data:
 
 networks:
   taskmanagement-network:
