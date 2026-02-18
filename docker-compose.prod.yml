@@ -9,7 +9,7 @@ services:
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.production
     restart: unless-stopped
     networks:
       - taskmanagement-network
@@ -19,8 +19,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    environment:
-      - NODE_ENV=production
+    depends_on:
+      - redis
 
   frontend:
     build: 
@@ -39,9 +39,20 @@ services:
     networks:
       - taskmanagement-network
 
+  redis:
+    image: redis:alpine
+    container_name: taskmanagement-redis-prod
+    restart: unless-stopped
+    networks:
+      - taskmanagement-network
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
 networks:
   taskmanagement-network:
     driver: bridge
 
 volumes:
+  redis_data:
   nginx_logs:

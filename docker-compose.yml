@@ -14,18 +14,17 @@ services:
       - REDIS_URL=${REDIS_URL}
       - MONGO_URI=${MONGO_URI}
       - SECRET_key=${SECRET_key}
-
     restart: unless-stopped
-    depends_on:
-      - redis
     networks:
       - taskmanagement-network
     healthcheck:
       test: ["CMD", "node", "healthcheck.js"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 3
       start_period: 40s
+    depends_on:
+      - redis
 
   frontend:
     build: 
@@ -44,13 +43,15 @@ services:
       - taskmanagement-network
 
   redis:
-    image: redis:7
-    container_name: angry_pare
+    image: redis:alpine
+    container_name: taskmanagement-redis
     ports:
       - "6379:6379"
     restart: unless-stopped
     networks:
       - taskmanagement-network
+    volumes:
+      - redis_data:/data
 
 networks:
   taskmanagement-network:

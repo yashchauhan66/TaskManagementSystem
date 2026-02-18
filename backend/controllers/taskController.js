@@ -4,39 +4,55 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+let redisClient = null;
 
-let redisClient;
 
 (async () => {
   try {
-    redisClient = redis.createClient({
-      url: process.env.REDIS_URL,
-    });
+    if (process.env.REDIS_URL) {
+      redisClient = redis.createClient({
+        url: process.env.REDIS_URL,
+      });
 
-    redisClient.on("error", (err) => {
-      console.log("Redis Error:", err);
-    });
+      redisClient.on("error", (err) => {
+        console.log("Redis Error:", err);
+        redisClient = null; 
+      });
 
-    await redisClient.connect();
-    console.log("Redis Connected ");
+      await redisClient.connect();
+      console.log("Redis Connected ");
+    } else {
+      console.log("Redis not configured - running without cache");
+    }
   } catch (err) {
     console.log("Redis Connection Failed:", err.message);
+    redisClient = null; 
   }
 })();
 
 
 
 const clearUserCache = async (userId) => {
-  const keys = await redisClient.keys(`tasks_${userId}_page_*`);
-  if (keys.length > 0) {
-    await redisClient.del(keys);
+  if (!redisClient) return;
+  try {
+    const keys = await redisClient.keys(`tasks_${userId}_page_*`);
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+    }
+  } catch (err) {
+    console.log("Cache clear error:", err.message);
   }
 };
 
 const clearAllTasksCache = async () => {
-  const keys = await redisClient.keys("all_tasks_page_*");
-  if (keys.length > 0) {
-    await redisClient.del(keys);
+  if (!redisClient) return;
+  try {
+    const keys = await redisClient.keys("all_tasks_page_*");
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+    }
+  } catch (err) {
+    console.log("Cache clear error:", err.message);
   }
 };
 
@@ -82,11 +98,16 @@ export const getAllTasks = async (req, res) => {
     const cacheKey = `all_tasks_page_${page}_limit_${limit}`;
 
   
-    const cachedData = await redisClient.get(cacheKey);
-
-    if (cachedData) {
-      console.log("Admin tasks from Redis");
-      return res.status(200).json(JSON.parse(cachedData));
+    if (redisClient) {
+      try {
+        const cachedData = await redisClient.get(cacheKey);
+        if (cachedData) {
+          console.log("Admin tasks from Redis");
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+      } catch (err) {
+        console.log("Cache read error:", err.message);
+      }
     }
 
     const totalTasks = await Task.countDocuments({});
@@ -107,8 +128,14 @@ export const getAllTasks = async (req, res) => {
       tasks,
     };
 
-    
-    await redisClient.setEx(cacheKey, 60, JSON.stringify(responseData));
+  
+    if (redisClient) {
+      try {
+        await redisClient.setEx(cacheKey, 60, JSON.stringify(responseData));
+      } catch (err) {
+        console.log("Cache write error:", err.message);
+      }
+    }
 
     console.log("Admin tasks from MongoDB ");
 
@@ -132,12 +159,17 @@ export const getTask = async (req, res) => {
 
     const cacheKey = `tasks_${userId}_page_${page}_limit_${limit}`;
 
-    
-    const cachedData = await redisClient.get(cacheKey);
-
-    if (cachedData) {
-      console.log("User tasks from Redis ");
-      return res.status(200).json(JSON.parse(cachedData));
+  
+    if (redisClient) {
+      try {
+        const cachedData = await redisClient.get(cacheKey);
+        if (cachedData) {
+          console.log("User tasks from Redis ");
+          return res.status(200).json(JSON.parse(cachedData));
+        }
+      } catch (err) {
+        console.log("Cache read error:", err.message);
+      }
     }
 
     const totalTasks = await Task.countDocuments({ user: userId });
@@ -158,8 +190,14 @@ export const getTask = async (req, res) => {
       tasks,
     };
 
-    //  Store in Redis \\
-    await redisClient.setEx(cacheKey, 60, JSON.stringify(responseData));
+    
+    if (redisClient) {
+      try {
+        await redisClient.setEx(cacheKey, 60, JSON.stringify(responseData));
+      } catch (err) {
+        console.log("Cache write error:", err.message);
+      }
+    }
 
     console.log("User tasks from MongoDB ");
 
